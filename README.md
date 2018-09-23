@@ -11,7 +11,7 @@ Convert .dex file to .java files.
 
 ## Installation
 ### Prerequisites
-Our scripts were tested on Ubuntu16.04.
+My scripts were tested on Ubuntu16.04.
 
 #### assc
 1. [Python3.6](https://www.python.org/downloads/)
