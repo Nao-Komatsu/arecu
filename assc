@@ -5,9 +5,9 @@ import subprocess
 import sys
 
 parser = argparse.ArgumentParser(
-        prog='ass.py',
-        usage='ass.py [options...]',
-        description='Command line Android Screenshot using Android Debug Bridge (adb command)',
+        prog='assc',
+        usage='assc [options...]',
+        description='Commandline Android Screenshot Capture using Android Debug Bridge (adb command)',
         epilog='This program is developed by Nao Komatsu.',
         add_help=True,
         )

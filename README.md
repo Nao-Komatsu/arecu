@@ -35,12 +35,12 @@ Assc needs to be connected to the device.
 
 Taking a screenshot for default filename (ss.png) :
 ```
-$ ass
+$ assc
 ```
 
 Specify a filename and taking a screenshot :
 ```
-$ ass -o <filename>
+$ assc -o <filename>
 ```
 
 ### d2j
