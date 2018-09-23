@@ -33,12 +33,12 @@ cd arecu/
 ### assc
 Assc needs to be connected to the device.
 
-Taking a screenshot for default filename (ss.png).
+Taking a screenshot for default filename (ss.png) :
 ```
 $ ass
 ```
 
-Specify a filename and taking a screenshot.
+Specify a filename and taking a screenshot :
 ```
 $ ass -o <filename>
 ```
@@ -46,7 +46,7 @@ $ ass -o <filename>
 ### d2j
 d2j needs to be got .dex file using apktool.
 
-Convert .dex file to .java files.
+Convert .dex file to .java files :
 ```
 $ d2j <.dex file>
 ```
