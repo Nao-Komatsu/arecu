@@ -1,4 +1,4 @@
-#!/home/nao/.pyenv/shims/python
+#!/usr/bin/env python
 
 import argparse
 import subprocess
