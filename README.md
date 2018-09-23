@@ -3,16 +3,17 @@ Android application reverse engineering commandline utility
 
 ## Description
 
-### Android Screen Shot (ass)
-
+### Android Screen Shot Capture (assc)
+Taking a screenshot of a device display and download the file from the device.
 
 ### dex to Java (d2j)
+Convert .dex file to .java files.
 
 ## Installation
 ### Prerequisites
 Our scripts were tested on Ubuntu16.04.
 
-#### ass
+#### assc
 1. [Python3.6](https://www.python.org/downloads/)
 2. [Android Debug Bridge](https://developer.android.com/studio/releases/platform-tools)
 
@@ -29,3 +30,23 @@ cd arecu/
 ```
 
 ## Usage
+### assc
+Assc needs to be connected to the device.
+
+Taking a screenshot for default filename (ss.png).
+```
+$ ass
+```
+
+Specify a filename and taking a screenshot.
+```
+$ ass -o <filename>
+```
+
+### d2j
+d2j needs to be got .dex file using apktool.
+
+Convert .dex file to .java files.
+```
+$ d2j <.dex file>
+```
