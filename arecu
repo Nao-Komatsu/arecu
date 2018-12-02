@@ -114,7 +114,7 @@ def main():
         if (args.jdcmd):
             jdcmd(TMP_DIR + '/classes.jar', outdir + '_jdcmd')
 
-        # Using Procyon decompiler
+        # Using Procyon Decompiler
         if (args.procyon):
             procyon(TMP_DIR + '/classes.jar', outdir + '_procyon')
 

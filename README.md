@@ -61,7 +61,7 @@ Undefined type catch
 /tmp/arecu_tmp
 ```
 
-- Using Procyon decompiler
+- Using Procyon Decompiler
 
 ```
 $ arecu -p base.apk
