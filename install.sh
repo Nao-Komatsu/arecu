@@ -2,7 +2,7 @@
 
 DIR=`pwd`
 
-sudo ln -sf $DIR/d2j /usr/local/bin/
-sudo ln -sf $DIR/assc /usr/local/bin/
+sudo ln -sfv $DIR/arecu /usr/local/bin/
+sudo ln -sfv $DIR/ /usr/local/bin/arecu_dir
 
 exit 0
