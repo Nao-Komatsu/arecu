@@ -2,7 +2,7 @@
 
 DIR=`pwd`
 
-sudo ln -sfv $DIR/arecu /usr/local/bin/
-sudo ln -sfv $DIR/ /usr/local/bin/arecu_dir
+sudo ln -sfv $DIR/arecu.py /usr/local/bin/arecu
+sudo ln -sfv $DIR /usr/local/bin/arecu_dir
 
 exit 0

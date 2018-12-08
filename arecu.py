@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''Arecu - Apk reverse engineering tools
-description
+'''Arecu - Android Application Reverse Engineering Commandline Utility
+
+Arecu is reverse engineering tool fot Android applications.
+
+- Decompile the apk file using JavaDecompiler
+- Decompile the apk file using Procyon Decompiler
+
 '''
 
 from logging import getLogger, StreamHandler, DEBUG
@@ -22,24 +27,24 @@ VERSION = '0.4.1'
 ### Make Parser ###
 parser = argparse.ArgumentParser(
         prog = 'Arecu',
-        usage = 'arecu [options...] <file_apk>',
-        description = 'Apk reverse engineering tools.',
+        usage = 'arecu [options...] <apk_file>',
+        description = 'Arecu is reverse engineering tool for apk.',
         epilog = 'Copyright (C) 2018 Nao Komatsu',
         add_help = True
         )
 
-parser.add_argument('file_apk',
+parser.add_argument('apk_file',
         help = 'Target apk file.'
         )
 
 parser.add_argument('-j', '--jdcmd',
-        help = 'Reconstructs Java source code from apk file using JavaDecompiler.',
+        help = 'Decompile the apk file using JavaDecompiler.',
         action = 'store_true',
         default = False
         )
 
 parser.add_argument('-p', '--procyon',
-        help = 'Reconstrunts Java source code from apk file using Procyon.',
+        help = 'Decompile the apk file using Procyon Decompiler',
         action = 'store_true',
         default = False
         )
@@ -49,7 +54,7 @@ parser.add_argument('-o', '--outdir',
         type = str,
         default = '.')
 
-parser.add_argument('-v', '--version',
+parser.add_argument('--version',
         version = '%(prog)s version ' + VERSION,
         action = 'version',
         default = False
@@ -87,22 +92,22 @@ def jdcmd(file, outdir):
     subprocess.run([TOOLS_PATH + '/jd-cmd/jd-cli', '-od', outdir, file])
 
 def procyon(file, outdir):
-    logger.debug('--- Procyon / Java Decompiler ---')
+    logger.debug('--- Procyon Decompiler ---')
     subprocess.run(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar', '-jar', file, '-o', outdir])
 
 def main():
     # Analysis argument
     args = parser.parse_args()
-    apk = args.file_apk
+    apk = args.apk_file
     basename = os.path.basename(apk)
     name, ext = os.path.splitext(basename)
     outdir = args.outdir + '/' + name
 
-    print('Target apk: ' + apk)
-    print('basename: ' + basename)
-    print('name: ' + name)
-    print('ext: ' + ext)
-    print('outdir: ' + outdir)
+    # print('Target apk: ' + apk)
+    # print('basename: ' + basename)
+    # print('name: ' + name)
+    # print('ext: ' + ext)
+    # print('outdir: ' + outdir)
 
     # Decompile apk file
     if (args.jdcmd or args.procyon):
