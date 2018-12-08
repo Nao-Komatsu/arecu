@@ -4,7 +4,12 @@ Android Application Reverse Engineering Commandline Utility
 
 ## Description
 
-Taking a screenshot of a device display and download the file from the device.
+Arecu is reverse engineering tool fot Android applications.
+
+### What works?
+
+- Decompile the apk file using JavaDecompiler
+- Decompile the apk file using Procyon Decompiler
 
 ## Installation
 
