@@ -22,7 +22,7 @@ import subprocess
 ### Configuration ###
 TMP_DIR = '/tmp/arecu_tmp'
 TOOLS_PATH = '/usr/local/bin/arecu_dir'
-VERSION = '0.4.1'
+VERSION = '1.0.0'
 
 ### Make Parser ###
 parser = argparse.ArgumentParser(
