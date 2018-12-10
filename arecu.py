@@ -7,6 +7,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 - Decompile the apk file using JavaDecompiler
 - Decompile the apk file using Procyon Decompiler
+- Unzip the apk file
 
 '''
 
@@ -22,7 +23,7 @@ import subprocess
 ### Configuration ###
 TMP_DIR = '/tmp/arecu_tmp'
 TOOLS_PATH = '/usr/local/bin/arecu_dir'
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 ### Make Parser ###
 parser = argparse.ArgumentParser(
@@ -30,24 +31,25 @@ parser = argparse.ArgumentParser(
         usage = 'arecu [options...] <apk_file>',
         description = 'Arecu is reverse engineering tool for apk.',
         epilog = 'Copyright (C) 2018 Nao Komatsu',
-        add_help = True
-        )
+        add_help = True)
 
 parser.add_argument('apk_file',
-        help = 'Target apk file.'
-        )
+        help = 'Target apk file.')
+
+parser.add_argument('-u', '--unzip',
+        help = 'Unzip the apk file.',
+        action = 'store_true',
+        default = False)
 
 parser.add_argument('-j', '--jdcmd',
         help = 'Decompile the apk file using JavaDecompiler.',
         action = 'store_true',
-        default = False
-        )
+        default = False)
 
 parser.add_argument('-p', '--procyon',
-        help = 'Decompile the apk file using Procyon Decompiler',
+        help = 'Decompile the apk file using Procyon Decompiler.',
         action = 'store_true',
-        default = False
-        )
+        default = False)
 
 parser.add_argument('-o', '--outdir',
         help = 'The name of directory that gets written. Default is current directory.',
@@ -57,8 +59,7 @@ parser.add_argument('-o', '--outdir',
 parser.add_argument('--version',
         version = '%(prog)s version ' + VERSION,
         action = 'version',
-        default = False
-        )
+        default = False)
 
 ### Logging Configuration ###
 logger = getLogger(__name__)
@@ -68,33 +69,6 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
 
-def mkdir(dir):
-    logger.debug('--- Make temprary directory ---')
-    logger.debug(dir)
-    os.makedirs(dir, exist_ok = True)
-
-def rmdir(dir):
-    logger.debug('--- Remove temporary directory ---')
-    logger.debug(dir)
-    shutil.rmtree(dir)
-
-def unzip(file, outdir):
-    logger.debug('--- Unzip apk file ---')
-    with zipfile.ZipFile(file) as existing_zip:
-        existing_zip.extractall(outdir)
-
-def d2j(file, outfile):
-    logger.debug('--- Dex to Jar ---')
-    subprocess.run([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh', file, '-o', outfile])
-
-def jdcmd(file, outdir):
-    logger.debug('--- JavaDecompiler ---')
-    subprocess.run([TOOLS_PATH + '/jd-cmd/jd-cli', '-od', outdir, file])
-
-def procyon(file, outdir):
-    logger.debug('--- Procyon Decompiler ---')
-    subprocess.run(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar', '-jar', file, '-o', outdir])
-
 def main():
     # Analysis argument
     args = parser.parse_args()
@@ -103,27 +77,53 @@ def main():
     name, ext = os.path.splitext(basename)
     outdir = args.outdir + '/' + name
 
-    # print('Target apk: ' + apk)
-    # print('basename: ' + basename)
-    # print('name: ' + name)
-    # print('ext: ' + ext)
-    # print('outdir: ' + outdir)
+    # Decompile
+    if (args.jdcmd or args.procyon or args.unzip):
 
-    # Decompile apk file
-    if (args.jdcmd or args.procyon):
-        mkdir(TMP_DIR)
-        unzip(apk, TMP_DIR)
-        d2j(TMP_DIR + '/classes.dex', TMP_DIR + '/classes.jar')
+        # Initialization
+        logger.debug('\n--- Initialization ---')
 
-        # Using JavaDecompiler
-        if (args.jdcmd):
-            jdcmd(TMP_DIR + '/classes.jar', outdir + '_jdcmd')
+        if (os.path.exists(TMP_DIR)):
+            logger.debug('Remove ' + TMP_DIR)
+            shutil.rmtree(TMP_DIR)
 
-        # Using Procyon Decompiler
-        if (args.procyon):
-            procyon(TMP_DIR + '/classes.jar', outdir + '_procyon')
+        logger.debug('Make ' + TMP_DIR)
+        os.makedirs(TMP_DIR, exist_ok = True)
 
-        rmdir(TMP_DIR)
+        # Unzip
+        logger.debug('\n--- Unzip apk file ---')
+        with zipfile.ZipFile(apk) as existing_zip:
+            existing_zip.extractall(TMP_DIR)
+
+        if (args.unzip):
+            logger.debug('Copy ' + TMP_DIR + ' to ' + outdir + '_unzip')
+            shutil.copytree(TMP_DIR, outdir + '_unzip')
+
+        # Dex to Jar
+        if (args.jdcmd or args.procyon):
+            logger.debug('\n--- Convert Dex to Jar ---')
+            subprocess.run([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
+                TMP_DIR + '/classes.dex',
+                '-o', TMP_DIR + '/classes.jar'])
+
+            # JavaDecompiler
+            if (args.jdcmd):
+                logger.debug('\n--- Decompile using JavaDecompiler ---')
+                subprocess.run([TOOLS_PATH + '/jd-cmd/jd-cli', '-od',
+                    outdir + '_jdcmd',
+                    TMP_DIR + '/classes.jar'])
+
+            # Procyon Decompiler
+            if (args.procyon):
+                logger.debug('\n--- Decompile using Procyon Decompiler ---')
+                subprocess.run(['java',
+                    '-jar', TOOLS_PATH + '/procyon/procyon.jar',
+                    '-jar', TMP_DIR + '/classes.jar',
+                    '-o', outdir + '_procyon'])
+
+        logger.debug('\n--- Clean up ---')
+        logger.debug('Remove ' + TMP_DIR)
+        shutil.rmtree(TMP_DIR)
 
 if __name__ == '__main__':
     main()

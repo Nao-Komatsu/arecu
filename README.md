@@ -10,6 +10,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 - Decompile the apk file using JavaDecompiler
 - Decompile the apk file using Procyon Decompiler
+- Unzip the apk file
 
 ## Installation
 
