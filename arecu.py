@@ -5,9 +5,10 @@
 
 Arecu is reverse engineering tool fot Android applications.
 
+- Unzip the apk file
 - Decompile the apk file using JavaDecompiler
 - Decompile the apk file using Procyon Decompiler
-- Unzip the apk file
+- Decode the apk file using Apktool
 
 '''
 
@@ -23,7 +24,7 @@ import subprocess
 ### Configuration ###
 TMP_DIR = '/tmp/arecu_tmp'
 TOOLS_PATH = '/usr/local/bin/arecu_dir'
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 ### Make Parser ###
 parser = argparse.ArgumentParser(
@@ -48,6 +49,11 @@ parser.add_argument('-j', '--jdcmd',
 
 parser.add_argument('-p', '--procyon',
         help = 'Decompile the apk file using Procyon Decompiler.',
+        action = 'store_true',
+        default = False)
+
+parser.add_argument('-a', '--apktool',
+        help = 'Decode the apk file using Apktool.',
         action = 'store_true',
         default = False)
 
@@ -124,6 +130,13 @@ def main():
         logger.debug('\n--- Clean up ---')
         logger.debug('Remove ' + TMP_DIR)
         shutil.rmtree(TMP_DIR)
+
+    # Decode
+    if (args.apktool):
+        logger.debug('\n--- Decode using Apktool ---')
+        subprocess.run(['apktool',
+            'decode', apk,
+            '-o', outdir + '_apktool'])
 
 if __name__ == '__main__':
     main()
