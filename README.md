@@ -8,9 +8,10 @@ Arecu is reverse engineering tool fot Android applications.
 
 ### What works?
 
+- Unzip the apk file
 - Decompile the apk file using JavaDecompiler
 - Decompile the apk file using Procyon Decompiler
-- Unzip the apk file
+- Decode the apk file using Apktool
 
 ## Installation
 
@@ -33,6 +34,18 @@ My scripts were tested on Ubuntu16.04.
 	openjdk version "1.8.0_191"
 	OpenJDK Runtime Environment (build 1.8.0_191-8u191-b12-0ubuntu0.16.04.1-b12)
 	OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
+	```
+
+3. [Apktool](https://ibotpeaches.github.io/Apktool/)
+
+	```
+	$ wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool
+	$ wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.3.4.jar
+	$ sudo mv apktool_2.3.4.jar /usr/local/bin/apktool.jar
+	$ sudo mv apktool /usr/local/bin/
+	$ sudo chmod 755 /usr/local/bin/apktool*
+	$ apktool --version
+	2.3.3
 	```
 
 ### Installing
