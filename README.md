@@ -78,3 +78,9 @@ $ arecu -j base.apk
 ```
 $ arecu -p base.apk
 ```
+
+### Decode
+
+```
+$ arecu -a base.apk
+```
