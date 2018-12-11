@@ -12,7 +12,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 '''
 
-from logging import getLogger, StreamHandler, DEBUG
+from logging import getLogger, StreamHandler, DEBUG, INFO
 import argparse
 import os
 import shutil
@@ -24,7 +24,7 @@ import subprocess
 ### Configuration ###
 TMP_DIR = '/tmp/arecu_tmp'
 TOOLS_PATH = '/usr/local/bin/arecu_dir'
-VERSION = '1.2.1'
+VERSION = '1.3.0'
 
 ### Make Parser ###
 parser = argparse.ArgumentParser(
@@ -62,27 +62,37 @@ parser.add_argument('-o', '--outdir',
         type = str,
         default = '.')
 
+parser.add_argument('-v', '--verbose',
+        help = 'Increase verbosity level.',
+        action = 'store_true',
+        default = False)
+
 parser.add_argument('--version',
         version = '%(prog)s version ' + VERSION,
         action = 'version',
         default = False)
 
+### Argument Analysis ###
+args = parser.parse_args()
+apk = args.apk_file
+basename = os.path.basename(apk)
+name, ext = os.path.splitext(basename)
+outdir = args.outdir + '/' + name
+
 ### Logging Configuration ###
+if (args.verbose):
+    level = 'DEBUG'
+else:
+    level = 'INFO'
+
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(level)
+logger.setLevel(level)
 logger.addHandler(handler)
 logger.propagate = False
 
 def main():
-    # Analysis argument
-    args = parser.parse_args()
-    apk = args.apk_file
-    basename = os.path.basename(apk)
-    name, ext = os.path.splitext(basename)
-    outdir = args.outdir + '/' + name
-
     # Decompile
     if (args.jdcmd or args.procyon or args.unzip):
 
