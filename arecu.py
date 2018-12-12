@@ -21,7 +21,7 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.3.1'
+VERSION = '1.3.2'
 
 ##### Make Parser #####
 
@@ -165,6 +165,7 @@ def main():
         logger.debug('Decode finished')
 
     logger.debug('\nSuccess!')
+
 
 if __name__ == '__main__':
     main()
