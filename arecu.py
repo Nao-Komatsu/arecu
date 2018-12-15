@@ -21,7 +21,7 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.4.0'
+VERSION = '1.5.0'
 
 ##### Make Parser #####
 
@@ -34,6 +34,11 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('apk_file',
         help = 'Target apk file.')
+
+parser.add_argument('-A', '--all',
+        help = 'Unzip, Decompile and Decode with one option.',
+        action = 'store_true',
+        default = False)
 
 parser.add_argument('-u', '--unzip',
         help = 'Unzip the apk file.',
@@ -79,6 +84,17 @@ TOOLS_PATH = '/usr/local/bin/arecu_dir'
 
 # Argument Analysis
 args = parser.parse_args()
+
+if (args.all):
+    unzip = True
+    jdcmd = True
+    procyon = True
+    apktool = True
+else:
+    unzip = args.unzip
+    jdcmd = args.jdcmd
+    procyon = args.procyon
+    apktool = args.apktool
 
 # Logging
 if (args.verbose):
@@ -139,7 +155,7 @@ def main():
         shutil.rmtree(TMP_DIR)
 
     # Decompile
-    if (args.jdcmd or args.procyon or args.unzip):
+    if (jdcmd or procyon or unzip):
 
         logger.debug('Create directory \'{}\''.format(TMP_DIR))
         os.makedirs(TMP_DIR, exist_ok = True)
@@ -150,24 +166,24 @@ def main():
         with zipfile.ZipFile(apk) as existing_zip:
             existing_zip.extractall(TMP_DIR)
 
-        if (args.unzip):
+        if (unzip):
             logger.debug('Copy \'{}\' to \'{}_unzip\''.format(TMP_DIR, outdir))
             shutil.copytree(TMP_DIR, outdir + '_unzip')
 
         # Dex to Jar
-        if (args.jdcmd or args.procyon):
+        if (jdcmd or procyon):
             logger.info('\n--- Convert Dex to Jar ---')
             call_subprocess([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
                 TMP_DIR + '/classes.dex', '-o', TMP_DIR + '/classes.jar'])
 
             # JavaDecompiler
-            if (args.jdcmd):
+            if (jdcmd):
                 logger.info('\n--- Decompile using JavaDecompiler ---')
                 call_subprocess([TOOLS_PATH + '/jd-cmd/jd-cli',
                     '-od', outdir + '_jdcmd', TMP_DIR + '/classes.jar'])
 
             # Procyon Decompiler
-            if (args.procyon):
+            if (procyon):
                 logger.info('\n--- Decompile using Procyon Decompiler ---')
                 call_subprocess(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar',
                     '-jar', TMP_DIR + '/classes.jar', '-o', outdir + '_procyon'])
@@ -177,7 +193,7 @@ def main():
         shutil.rmtree(TMP_DIR)
 
     # Decode
-    if (args.apktool):
+    if (apktool):
         logger.info('\n--- Decode using Apktool ---')
         call_subprocess(['apktool', 'decode', apk, '-o', outdir + '_apktool'])
 
