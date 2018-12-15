@@ -21,7 +21,7 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.3.2'
+VERSION = '1.4.0'
 
 ##### Make Parser #####
 
@@ -94,6 +94,33 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
+##### Function Definition #####
+
+def call_subprocess(cmd):
+    '''call_subprocess function
+
+    Execution subprocess and Output branching by log level.
+
+    Args:
+        cmd (list): Command to be executed
+
+    Returns:
+        None
+    '''
+
+    if (level == 'INFO'):
+        try:
+            subprocess.run(cmd, stdout = subprocess.PIPE, check = True)
+        except subprocess.CalledProcessError:
+            logger.info('Error: {}'.format(cmd))
+
+    else:
+        try:
+            subprocess.run(cmd, check = True)
+        except subprocess.CalledProcessError:
+            logger.info('Error: {}'.format(cmd))
+
+
 ##### Main Process #####
 
 def main():
@@ -118,7 +145,7 @@ def main():
         os.makedirs(TMP_DIR, exist_ok = True)
 
         # Unzip
-        logger.debug('\n--- Unzip apk file ---')
+        logger.info('\n--- Unzip apk file ---')
         logger.debug('Unzip \'{}\' to \'{}\''.format(apk, TMP_DIR))
         with zipfile.ZipFile(apk) as existing_zip:
             existing_zip.extractall(TMP_DIR)
@@ -129,25 +156,21 @@ def main():
 
         # Dex to Jar
         if (args.jdcmd or args.procyon):
-            logger.debug('\n--- Convert Dex to Jar ---')
-            subprocess.run(
-                    [TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh', TMP_DIR + '/classes.dex',
-                        '-o', TMP_DIR + '/classes.jar', '-d'])
+            logger.info('\n--- Convert Dex to Jar ---')
+            call_subprocess([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
+                TMP_DIR + '/classes.dex', '-o', TMP_DIR + '/classes.jar'])
 
             # JavaDecompiler
             if (args.jdcmd):
-                logger.debug('\n--- Decompile using JavaDecompiler ---')
-                subprocess.run(
-                        [TOOLS_PATH + '/jd-cmd/jd-cli', '-od', outdir + '_jdcmd',
-                            TMP_DIR + '/classes.jar', '-g', 'DEBUG'])
+                logger.info('\n--- Decompile using JavaDecompiler ---')
+                call_subprocess([TOOLS_PATH + '/jd-cmd/jd-cli',
+                    '-od', outdir + '_jdcmd', TMP_DIR + '/classes.jar'])
 
             # Procyon Decompiler
             if (args.procyon):
-                logger.debug('\n--- Decompile using Procyon Decompiler ---')
-                subprocess.run(
-                        ['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar',
-                            '-jar', TMP_DIR + '/classes.jar',
-                            '-o', outdir + '_procyon' '-v', '3'])
+                logger.info('\n--- Decompile using Procyon Decompiler ---')
+                call_subprocess(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar',
+                    '-jar', TMP_DIR + '/classes.jar', '-o', outdir + '_procyon'])
 
         logger.debug('\n--- Clean up ---')
         logger.debug('Remove directory \'{}\''.format(TMP_DIR))
@@ -155,11 +178,10 @@ def main():
 
     # Decode
     if (args.apktool):
-        logger.debug('\n--- Decode using Apktool ---')
-        subprocess.run(
-                ['apktool', 'decode', apk, '-o', outdir + '_apktool'])
+        logger.info('\n--- Decode using Apktool ---')
+        call_subprocess(['apktool', 'decode', apk, '-o', outdir + '_apktool'])
 
-    logger.debug('\nSuccess!')
+    logger.info('\nDone!')
 
 
 if __name__ == '__main__':
