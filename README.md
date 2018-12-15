@@ -19,7 +19,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 My scripts were tested on Ubuntu16.04.
 
-1. [Python3.6](https://www.python.org/)
+1. [Python3.6](https://www.python.org/downloads/)
 
 	```
 	$ python -V

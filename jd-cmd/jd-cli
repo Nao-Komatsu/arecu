@@ -3,4 +3,4 @@
 DIRNAME=`dirname "$0"`
 DIR=`cd "$DIRNAME"; pwd`
 
-java -jar "$DIR/jd-cli.jar" $@
+java -jar "$DIR/jd-cli.jar" $@ 

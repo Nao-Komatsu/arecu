@@ -12,7 +12,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 '''
 
-from logging import getLogger, StreamHandler, DEBUG, INFO
+from logging import getLogger, StreamHandler, DEBUG
 import argparse
 import os
 import shutil
@@ -21,10 +21,12 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.4.0'
+### Configuration ###
+TMP_DIR = '/tmp/arecu_tmp'
+TOOLS_PATH = '/usr/local/bin/arecu_dir'
+VERSION = '1.2.1'
 
-##### Make Parser #####
-
+### Make Parser ###
 parser = argparse.ArgumentParser(
         prog = 'Arecu',
         usage = 'arecu [options...] <apk_file>',
@@ -60,129 +62,81 @@ parser.add_argument('-o', '--outdir',
         type = str,
         default = '.')
 
-parser.add_argument('-v', '--verbose',
-        help = 'Increase verbosity level.',
-        action = 'store_true',
-        default = False)
-
 parser.add_argument('--version',
         version = '%(prog)s version ' + VERSION,
         action = 'version',
         default = False)
 
-
-##### Configuration #####
-
-# Global Variables
-TMP_DIR = '/tmp/arecu_tmp'
-TOOLS_PATH = '/usr/local/bin/arecu_dir'
-
-# Argument Analysis
-args = parser.parse_args()
-
-# Logging
-if (args.verbose):
-    level = 'DEBUG'
-else:
-    level = 'INFO'
-
+### Logging Configuration ###
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(level)
-logger.setLevel(level)
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
 
-
-##### Function Definition #####
-
-def call_subprocess(cmd):
-    '''call_subprocess function
-
-    Execution subprocess and Output branching by log level.
-
-    Args:
-        cmd (list): Command to be executed
-
-    Returns:
-        None
-    '''
-
-    if (level == 'INFO'):
-        try:
-            subprocess.run(cmd, stdout = subprocess.PIPE, check = True)
-        except subprocess.CalledProcessError:
-            logger.info('Error: {}'.format(cmd))
-
-    else:
-        try:
-            subprocess.run(cmd, check = True)
-        except subprocess.CalledProcessError:
-            logger.info('Error: {}'.format(cmd))
-
-
-##### Main Process #####
-
 def main():
-
-    # Initialization
-    logger.debug('\n--- Initialization ---')
+    # Analysis argument
+    args = parser.parse_args()
     apk = args.apk_file
     basename = os.path.basename(apk)
-    logger.debug('Target apk file is \'{}\''.format(basename))
     name, ext = os.path.splitext(basename)
-    outdir = os.path.join(args.outdir, name)
-    logger.debug('Output directory is \'{}\''.format(args.outdir))
-
-    if (os.path.exists(TMP_DIR)):
-        logger.debug('Remove directory \'{}\''.format(TMP_DIR))
-        shutil.rmtree(TMP_DIR)
+    outdir = args.outdir + '/' + name
 
     # Decompile
     if (args.jdcmd or args.procyon or args.unzip):
 
-        logger.debug('Create directory \'{}\''.format(TMP_DIR))
+        # Initialization
+        logger.debug('\n--- Initialization ---')
+
+        if (os.path.exists(TMP_DIR)):
+            logger.debug('Remove ' + TMP_DIR)
+            shutil.rmtree(TMP_DIR)
+
+        logger.debug('Make ' + TMP_DIR)
         os.makedirs(TMP_DIR, exist_ok = True)
 
         # Unzip
-        logger.info('\n--- Unzip apk file ---')
-        logger.debug('Unzip \'{}\' to \'{}\''.format(apk, TMP_DIR))
+        logger.debug('\n--- Unzip apk file ---')
         with zipfile.ZipFile(apk) as existing_zip:
             existing_zip.extractall(TMP_DIR)
 
         if (args.unzip):
-            logger.debug('Copy \'{}\' to \'{}_unzip\''.format(TMP_DIR, outdir))
+            logger.debug('Copy ' + TMP_DIR + ' to ' + outdir + '_unzip')
             shutil.copytree(TMP_DIR, outdir + '_unzip')
 
         # Dex to Jar
         if (args.jdcmd or args.procyon):
-            logger.info('\n--- Convert Dex to Jar ---')
-            call_subprocess([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
-                TMP_DIR + '/classes.dex', '-o', TMP_DIR + '/classes.jar'])
+            logger.debug('\n--- Convert Dex to Jar ---')
+            subprocess.run([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
+                TMP_DIR + '/classes.dex',
+                '-o', TMP_DIR + '/classes.jar'])
 
             # JavaDecompiler
             if (args.jdcmd):
-                logger.info('\n--- Decompile using JavaDecompiler ---')
-                call_subprocess([TOOLS_PATH + '/jd-cmd/jd-cli',
-                    '-od', outdir + '_jdcmd', TMP_DIR + '/classes.jar'])
+                logger.debug('\n--- Decompile using JavaDecompiler ---')
+                subprocess.run([TOOLS_PATH + '/jd-cmd/jd-cli', '-od',
+                    outdir + '_jdcmd',
+                    TMP_DIR + '/classes.jar'])
 
             # Procyon Decompiler
             if (args.procyon):
-                logger.info('\n--- Decompile using Procyon Decompiler ---')
-                call_subprocess(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar',
-                    '-jar', TMP_DIR + '/classes.jar', '-o', outdir + '_procyon'])
+                logger.debug('\n--- Decompile using Procyon Decompiler ---')
+                subprocess.run(['java',
+                    '-jar', TOOLS_PATH + '/procyon/procyon.jar',
+                    '-jar', TMP_DIR + '/classes.jar',
+                    '-o', outdir + '_procyon'])
 
         logger.debug('\n--- Clean up ---')
-        logger.debug('Remove directory \'{}\''.format(TMP_DIR))
+        logger.debug('Remove ' + TMP_DIR)
         shutil.rmtree(TMP_DIR)
 
     # Decode
     if (args.apktool):
-        logger.info('\n--- Decode using Apktool ---')
-        call_subprocess(['apktool', 'decode', apk, '-o', outdir + '_apktool'])
-
-    logger.info('\nDone!')
-
+        logger.debug('\n--- Decode using Apktool ---')
+        subprocess.run(['apktool',
+            'decode', apk,
+            '-o', outdir + '_apktool'])
 
 if __name__ == '__main__':
     main()
