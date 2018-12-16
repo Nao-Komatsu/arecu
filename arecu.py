@@ -12,7 +12,7 @@ Arecu is reverse engineering tool fot Android applications.
 
 '''
 
-from logging import getLogger, StreamHandler, DEBUG, INFO
+from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 import argparse
 import os
 import shutil
@@ -21,14 +21,14 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 
 ##### Make Parser #####
 
 parser = argparse.ArgumentParser(
         prog = 'Arecu',
         usage = 'arecu [options...] <apk_file>',
-        description = 'Arecu is reverse engineering tool for apk.',
+        description = '%(prog)s is reverse engineering tool for apk.',
         epilog = 'Copyright (C) 2018 Nao Komatsu',
         add_help = True)
 
@@ -102,12 +102,14 @@ if (args.verbose):
 else:
     level = 'INFO'
 
-logger = getLogger(__name__)
+logger = getLogger('arecu')
 handler = StreamHandler()
 handler.setLevel(level)
 logger.setLevel(level)
 logger.addHandler(handler)
 logger.propagate = False
+format = Formatter('%(levelname)s\t%(name)s\t%(message)s')
+handler.setFormatter(format)
 
 
 ##### Function Definition #####
@@ -142,7 +144,7 @@ def call_subprocess(cmd):
 def main():
 
     # Initialization
-    logger.debug('\n--- Initialization ---')
+    logger.debug('--- Initialization ---')
     apk = args.apk_file
     basename = os.path.basename(apk)
     logger.debug('Target apk file is \'{}\''.format(basename))
@@ -161,7 +163,7 @@ def main():
         os.makedirs(TMP_DIR, exist_ok = True)
 
         # Unzip
-        logger.info('\n--- Unzip apk file ---')
+        logger.info('--- Unzip apk file ---')
         logger.debug('Unzip \'{}\' to \'{}\''.format(apk, TMP_DIR))
         with zipfile.ZipFile(apk) as existing_zip:
             existing_zip.extractall(TMP_DIR)
@@ -172,32 +174,32 @@ def main():
 
         # Dex to Jar
         if (jdcmd or procyon):
-            logger.info('\n--- Convert Dex to Jar ---')
+            logger.info('--- Convert Dex to Jar ---')
             call_subprocess([TOOLS_PATH + '/dex2jar/d2j-dex2jar.sh',
                 TMP_DIR + '/classes.dex', '-o', TMP_DIR + '/classes.jar'])
 
             # JavaDecompiler
             if (jdcmd):
-                logger.info('\n--- Decompile using JavaDecompiler ---')
+                logger.info('--- Decompile using JavaDecompiler ---')
                 call_subprocess([TOOLS_PATH + '/jd-cmd/jd-cli',
                     '-od', outdir + '_jdcmd', TMP_DIR + '/classes.jar'])
 
             # Procyon Decompiler
             if (procyon):
-                logger.info('\n--- Decompile using Procyon Decompiler ---')
+                logger.info('--- Decompile using Procyon Decompiler ---')
                 call_subprocess(['java', '-jar', TOOLS_PATH + '/procyon/procyon.jar',
                     '-jar', TMP_DIR + '/classes.jar', '-o', outdir + '_procyon'])
 
-        logger.debug('\n--- Clean up ---')
+        logger.debug('--- Clean up ---')
         logger.debug('Remove directory \'{}\''.format(TMP_DIR))
         shutil.rmtree(TMP_DIR)
 
     # Decode
     if (apktool):
-        logger.info('\n--- Decode using Apktool ---')
+        logger.info('--- Decode using Apktool ---')
         call_subprocess(['apktool', 'decode', apk, '-o', outdir + '_apktool'])
 
-    logger.info('\nDone!')
+    logger.info('Done!')
 
 
 if __name__ == '__main__':
