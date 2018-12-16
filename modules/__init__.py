@@ -1,1 +1,1 @@
-from . import logging_conf
+from . import log

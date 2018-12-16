@@ -21,7 +21,7 @@ import modules
 import sys
 import subprocess
 
-VERSION = '1.5.1'
+VERSION = '1.5.2'
 
 ##### Make Parser #####
 
@@ -103,13 +103,7 @@ else:
     level = 'INFO'
 
 logger = getLogger('arecu')
-handler = StreamHandler()
-handler.setLevel(level)
-logger.setLevel(level)
-logger.addHandler(handler)
-logger.propagate = False
-format = Formatter('%(levelname)s\t%(name)s\t%(message)s')
-handler.setFormatter(format)
+modules.log.config(level)
 
 
 ##### Function Definition #####
