@@ -7,15 +7,17 @@ import shutil
 import subprocess
 import zipfile
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
+from pathlib import Path
 
 # Logging
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
-inifile = configparser.ConfigParser()
-inifile.read('./config.ini', 'UTF-8')
-tmp_dir = inifile.get('settings', 'tmp_dir')
-lib_path = inifile.get('settings', 'lib_path')
+inifile = '<INIFILE>'
+config = configparser.ConfigParser()
+config.read(inifile, 'UTF-8')
+tmp_dir = config.get('settings', 'tmp_dir')
+lib_path = config.get('settings', 'lib_path')
 
 
 ##### Function Definition #####
@@ -81,6 +83,8 @@ def main(args, level):
         logger.info('--- Unzip apk file ---')
         logger.debug('Unzip \'{}\' to \'{}\''.format(apk, tmp_dir))
         with zipfile.ZipFile(apk) as existing_zip:
+            dexFiles = [file for file in existing_zip.namelist() if '.dex' in file]
+            jarFiles = [file.replace('dex', 'jar') for file in dexFiles]
             existing_zip.extractall(tmp_dir)
 
         if (unzip):
@@ -90,20 +94,23 @@ def main(args, level):
         # Dex to Jar
         if (jdcmd or procyon):
             logger.info('--- Convert Dex to Jar ---')
-            call_subprocess([lib_path + '/dex2jar/d2j-dex2jar.sh',
-                tmp_dir + '/classes.dex', '-o', tmp_dir + '/classes.jar'], level)
+            for i, dex in enumerate(dexFiles):
+                call_subprocess([lib_path + '/dex2jar/d2j-dex2jar.sh',
+                    os.path.join(tmp_dir, dex), '-o', os.path.join(tmp_dir, jarFiles[i])], level)
 
             # JavaDecompiler
             if (jdcmd):
                 logger.info('--- Decompile using JavaDecompiler ---')
-                call_subprocess([lib_path + '/jd-cmd/jd-cli',
-                    '-od', outdir + '_jdcmd', tmp_dir + '/classes.jar'], level)
+                for jar in jarFiles:
+                    call_subprocess([lib_path + '/jd-cmd/jd-cli',
+                        '-od', outdir + '_jdcmd', os.path.join(tmp_dir, jar)], level)
 
             # Procyon Decompiler
             if (procyon):
                 logger.info('--- Decompile using Procyon Decompiler ---')
-                call_subprocess(['java', '-jar', lib_path + '/procyon/procyon.jar',
-                    '-jar', tmp_dir + '/classes.jar', '-o', outdir + '_procyon'], level)
+                for jar in jarFiles:
+                    call_subprocess(['java', '-jar', lib_path + '/procyon/procyon.jar',
+                        '-jar', os.path.join(tmp_dir, jar), '-o', outdir + '_procyon'], level)
 
         logger.debug('--- Clean up ---')
         logger.debug('Remove directory \'{}\''.format(tmp_dir))
