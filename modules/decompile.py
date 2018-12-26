@@ -12,10 +12,11 @@ from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
-inifile = configparser.ConfigParser()
-inifile.read('./config.ini', 'UTF-8')
-tmp_dir = inifile.get('settings', 'tmp_dir')
-lib_path = inifile.get('settings', 'lib_path')
+inifile = '<INIFILE>'
+config = configparser.ConfigParser()
+config.read(inifile, 'UTF-8')
+tmp_dir = config.get('settings', 'tmp_dir')
+lib_path = config.get('settings', 'lib_path')
 
 
 ##### Function Definition #####
