@@ -22,6 +22,7 @@ VERSION = '1.6.1'
 
 ##### Make Parser #####
 
+# Top-level parser
 parser = argparse.ArgumentParser(
         prog = 'Arecu',
         usage = 'arecu [options...] <apk_file>',
@@ -29,47 +30,53 @@ parser = argparse.ArgumentParser(
         epilog = 'Copyright (C) 2018 Nao Komatsu',
         add_help = True)
 
-parser.add_argument('apk_file',
+parser.add_argument('--version',
+        version = '%(prog)s version ' + VERSION,
+        action = 'version',
+        default = False)
+
+subparsers = parser.add_subparsers()
+
+# "dec" command parser
+parser_dec = subparsers.add_parser('dec')
+parser_dec.set_defaults(func=modules.decompile.main)
+
+parser_dec.add_argument('apk_file',
         help = 'Target apk file.')
 
-parser.add_argument('-A', '--all',
+parser_dec.add_argument('-A', '--all',
         help = 'Unzip, Decompile and Decode with one option.',
         action = 'store_true',
         default = False)
 
-parser.add_argument('-u', '--unzip',
+parser_dec.add_argument('-u', '--unzip',
         help = 'Unzip the apk file.',
         action = 'store_true',
         default = False)
 
-parser.add_argument('-j', '--jdcmd',
+parser_dec.add_argument('-j', '--jdcmd',
         help = 'Decompile the apk file using JavaDecompiler.',
         action = 'store_true',
         default = False)
 
-parser.add_argument('-p', '--procyon',
+parser_dec.add_argument('-p', '--procyon',
         help = 'Decompile the apk file using Procyon Decompiler.',
         action = 'store_true',
         default = False)
 
-parser.add_argument('-a', '--apktool',
+parser_dec.add_argument('-a', '--apktool',
         help = 'Decode the apk file using Apktool.',
         action = 'store_true',
         default = False)
 
-parser.add_argument('-o', '--outdir',
+parser_dec.add_argument('-o', '--outdir',
         help = 'The name of directory that gets written. Default is current directory.',
         type = str,
         default = '.')
 
-parser.add_argument('-v', '--verbose',
+parser_dec.add_argument('-v', '--verbose',
         help = 'Increase verbosity level.',
         action = 'store_true',
-        default = False)
-
-parser.add_argument('--version',
-        version = '%(prog)s version ' + VERSION,
-        action = 'version',
         default = False)
 
 
@@ -91,7 +98,7 @@ modules.log.config(level)
 ##### Main Process #####
 
 def main():
-    modules.decompile.main(args, level)
+    args.func(args, level)
 
 
 if __name__ == '__main__':
