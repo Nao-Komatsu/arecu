@@ -47,10 +47,18 @@ def call_subprocess(cmd, level):
             logger.info('Error: {}'.format(cmd))
 
 
-def main(args, level):
+def main(args):
+
+    # Logging
+    if (args.verbose):
+        level = 'DEBUG'
+    else:
+        level = 'INFO'
+    modules.log.config(level)
 
     # Initialization
     logger.debug('--- Initialization ---')
+
     if (args.all):
         unzip = True
         jdcmd = True
