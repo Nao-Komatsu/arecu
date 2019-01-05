@@ -8,10 +8,11 @@ Arecu is reverse engineering tool fot Android applications.
 
 ### What works?
 
-- Unzip the apk file
-- Decompile the apk file using JavaDecompiler
-- Decompile the apk file using Procyon Decompiler
-- Decode the apk file using Apktool
+- Decompile & Decode
+  - Unzip the apk file
+  - Decompile the apk file using JavaDecompiler
+  - Decompile the apk file using Procyon Decompiler
+  - Decode the apk file using Apktool
 
 ## Installation
 
@@ -59,28 +60,23 @@ cd arecu/
 
 ## Usage
 
-### Unzip
+### Decompile & Decode for apk file
+
+The decompile option on Arecu can be invoked either from `dec` or `decompile` like shown below.
 
 ```
-$ arecu -u base.apk
-```
+# Unzip foo.apk to foo_unzip folder
+$ arecu dec -u foo.apk
 
-### Decompile
+# Decompile foo.apk to foo_jdcmd folder using JavaDecompiler
+$ arecu dec -j foo.apk
 
-- Using JavaDecompiler
+# Decompile foo.apk to foo_procyon folder using Procyon Decompiler and Output logs in verbose
+$ arecu dec -v -p foo.apk
 
-```
-$ arecu -j base.apk
-```
+# Decode foo.apk to foo_apktool folder using Apktool and Output logs in verbose
+$ arecu dec -v -a foo.apk
 
-- Using Procyon Decompiler
-
-```
-$ arecu -p base.apk
-```
-
-### Decode
-
-```
-$ arecu -a base.apk
+# Unzip, Decompile and Decode foo.apk to foo_unzip, foo_jdcmd, foo_procyon, foo_apktool in bar folder
+$ arecu dec -A foo.apk -o bar
 ```
