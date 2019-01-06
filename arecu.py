@@ -105,6 +105,11 @@ parser_ss.add_argument('-n', '--name',
         help = 'File name excluding extensions to be saved',
         type = str)
 
+parser_ss.add_argument('-i', '--increment',
+        help = 'Increment by adding a number to file name',
+        action = 'store_true',
+        default = False)
+
 parser_ss.add_argument('-v', '--verbose',
         help = 'Increase verbosity level',
         action = 'store_true',
