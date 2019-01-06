@@ -15,8 +15,8 @@ logger = getLogger('arecu').getChild('decompile')
 inifile = '<INIFILE>'
 config = configparser.ConfigParser()
 config.read(inifile, 'UTF-8')
-tmp_dir = config.get('settings', 'tmp_dir')
-lib_path = config.get('settings', 'lib_path')
+tmp_dir = config.get('decompile', 'tmp_dir')
+lib_path = config.get('decompile', 'lib_path')
 
 # Decompile & Decode process
 def main(args):

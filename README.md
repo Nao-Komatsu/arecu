@@ -13,6 +13,9 @@ Arecu is reverse engineering tool fot Android applications.
   - Decompile the apk file using JavaDecompiler
   - Decompile the apk file using Procyon Decompiler
   - Decode the apk file using Apktool
+- Screenshot
+  - Take a screenshot of a device
+  - Save a screenshot to your development machine
 
 ## Installation
 
@@ -49,6 +52,14 @@ My scripts were tested on Ubuntu16.04.
 	2.3.3
 	```
 
+4. [Android Debug Bridge](https://developer.android.com/studio/command-line/adb)
+
+	```
+	$ sudo apt install android-tools-adb
+	$ adb version
+	Android Debug Bridge version 1.0.32
+	```
+
 ### Installing
 
 ```
@@ -80,3 +91,5 @@ $ arecu dec -v -a foo.apk
 # Unzip, Decompile and Decode foo.apk to foo_unzip, foo_jdcmd, foo_procyon, foo_apktool in bar folder
 $ arecu dec -A foo.apk -o bar
 ```
+
+## Advanced
