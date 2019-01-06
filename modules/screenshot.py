@@ -11,7 +11,7 @@ logger = getLogger('arecu').getChild('screenshot')
 inifile = '<INIFILE>'
 config = configparser.ConfigParser()
 config.read(inifile, 'UTF-8')
-name = config.get('screenshot', 'file_name')
+name = config.get('screenshot', 'file_name') + '.png'
 
 # Output help message
 def main(args):
@@ -23,9 +23,12 @@ def main(args):
         level = 'INFO'
     modules.log.config(level)
 
-    path = os.path.join('/sdcard/Download/', name + '.png')
+    if (args.name):
+        name = args.name + '.png'
+
+    path = os.path.join('/sdcard/Download/', name)
     device = args.device
-    outdir = os.path.join(args.outdir, name + '.png')
+    outdir = os.path.join(args.outdir, name)
 
     logger.debug('Take a screenshot...')
     modules.function.call_subprocess(['adb', '-s', device, 'shell', 'screencap', '-p', path], level)

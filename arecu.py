@@ -17,7 +17,7 @@ import configparser
 import modules
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 
-VERSION = '2.2.0'
+VERSION = '2.3.0'
 
 
 ##### Make Parser #####
@@ -100,6 +100,10 @@ parser_ss.add_argument('-o', '--outdir',
         help = 'The name of directory that gets written',
         type = str,
         default = '.')
+
+parser_ss.add_argument('-n', '--name',
+        help = 'File name excluding extensions to be saved',
+        type = str)
 
 parser_ss.add_argument('-v', '--verbose',
         help = 'Increase verbosity level',
