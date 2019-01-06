@@ -13,6 +13,9 @@ Arecu is reverse engineering tool fot Android applications.
   - Decompile the apk file using JavaDecompiler
   - Decompile the apk file using Procyon Decompiler
   - Decode the apk file using Apktool
+- Screenshot
+  - Take a screenshot of a device
+  - Save a screenshot to your development machine
 
 ## Installation
 
@@ -49,6 +52,14 @@ My scripts were tested on Ubuntu16.04.
 	2.3.3
 	```
 
+4. [Android Debug Bridge](https://developer.android.com/studio/command-line/adb)
+
+	```
+	$ sudo apt install android-tools-adb
+	$ adb version
+	Android Debug Bridge version 1.0.32
+	```
+
 ### Installing
 
 ```
@@ -69,7 +80,7 @@ The decompile option on Arecu can be invoked either from `dec` or `decompile` li
 $ arecu dec -u foo.apk
 
 # Decompile foo.apk to foo_jdcmd folder using JavaDecompiler
-$ arecu dec -j foo.apk
+$ arecu decompile -j foo.apk
 
 # Decompile foo.apk to foo_procyon folder using Procyon Decompiler and Output logs in verbose
 $ arecu dec -v -p foo.apk
@@ -80,3 +91,20 @@ $ arecu dec -v -a foo.apk
 # Unzip, Decompile and Decode foo.apk to foo_unzip, foo_jdcmd, foo_procyon, foo_apktool in bar folder
 $ arecu dec -A foo.apk -o bar
 ```
+
+### Take a screenshot
+
+The screenshot option on Arecu can be invoked either from `ss` or `screenshot` like shown below.
+
+```
+# Take a screenshot and save it
+$ arecu ss xxx.xxx.xxx.xxx:5555
+
+# Take a screenshot and save it bar folder
+$ arecu screenshot -o bar xxx.xxx.xxx.xxx:5555
+
+# Take a screenshot and save it and Output logs in verbose
+$ arecu ss -v xxx.xxx.xxx.xxx:5555
+```
+
+## Advanced
