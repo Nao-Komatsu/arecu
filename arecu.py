@@ -96,6 +96,11 @@ parser_ss = subparsers.add_parser('ss',
 parser_ss.add_argument('device',
         help = 'Target device')
 
+parser_ss.add_argument('-o', '--outdir',
+        help = 'The name of directory that gets written',
+        type = str,
+        default = '.')
+
 parser_ss.add_argument('-v', '--verbose',
         help = 'Increase verbosity level',
         action = 'store_true',

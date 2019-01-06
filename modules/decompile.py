@@ -8,7 +8,6 @@ import zipfile
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 from pathlib import Path
 
-# Logging
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
