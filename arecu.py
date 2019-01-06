@@ -17,7 +17,7 @@ import configparser
 import modules
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 
-VERSION = '2.0.0'
+VERSION = '2.0.1'
 
 
 ##### Make Parser #####
@@ -35,7 +35,7 @@ parser.add_argument('--version',
         action = 'version',
         default = False)
 
-parser.set_defaults(func=modules.function.help)
+parser.set_defaults(func=modules.function.print_help)
 
 # Sub-commands parser
 subparsers = parser.add_subparsers(
@@ -44,8 +44,8 @@ subparsers = parser.add_subparsers(
         help = 'For more detailed help add --help')
 
 # "dec" command parser
-parser_dec = subparsers.add_parser('decompile',
-        aliases = ['dec'],
+parser_dec = subparsers.add_parser('dec',
+        aliases = ['decompile'],
         help = 'Decompile & Decode the apk file')
 
 parser_dec.set_defaults(func=modules.decompile.main)
