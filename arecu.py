@@ -17,7 +17,7 @@ import configparser
 import modules
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 
-VERSION = '2.3.0'
+VERSION = '2.3.1'
 
 
 ##### Make Parser #####
