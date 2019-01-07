@@ -74,21 +74,21 @@ def main(args):
         if (jdcmd or procyon):
             logger.info('--- Convert Dex to Jar ---')
             for i, dex in enumerate(dexFiles):
-                modules.function.call_subprocess([lib_path + '/dex2jar/d2j-dex2jar.sh',
+                modules.function.call_subprocess([os.path.join(lib_path, 'dex2jar/d2j-dex2jar.sh'),
                     os.path.join(tmp_dir, dex), '-o', os.path.join(tmp_dir, jarFiles[i])], level)
 
             # JavaDecompiler
             if (jdcmd):
                 logger.info('--- Decompile using JavaDecompiler ---')
                 for jar in jarFiles:
-                    modules.function.call_subprocess([lib_path + '/jd-cmd/jd-cli',
+                    modules.function.call_subprocess([os.path.join(lib_path, 'jd-cmd/jd-cli'),
                         '-od', outdir + '_jdcmd', os.path.join(tmp_dir, jar)], level)
 
             # Procyon Decompiler
             if (procyon):
                 logger.info('--- Decompile using Procyon Decompiler ---')
                 for jar in jarFiles:
-                    modules.function.call_subprocess(['java', '-jar', lib_path + '/procyon/procyon.jar',
+                    modules.function.call_subprocess(['java', '-jar', os.path.join(lib_path, 'procyon/procyon.jar'),
                         '-jar', os.path.join(tmp_dir, jar), '-o', outdir + '_procyon'], level)
 
         logger.debug('--- Clean up ---')

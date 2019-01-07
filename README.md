@@ -16,6 +16,7 @@ Arecu is reverse engineering tool fot Android applications.
 - Screenshot
   - Take a screenshot of a device
   - Save a screenshot to your development machine
+  - Automatically increment file name number when saving
 
 ## Installation
 
@@ -102,6 +103,13 @@ $ arecu ss xxx.xxx.xxx.xxx:5555
 
 # Take a screenshot and save it bar folder
 $ arecu screenshot -o bar xxx.xxx.xxx.xxx:5555
+
+# Take a screenshot and save foo.png
+$ arecu ss -n foo xxx.xxx.xxx.xxx:5555
+
+# Take a screenshot and automatically increment file name number
+# Ex. ss_001.png ss_002.png ss_003.png ...
+$ arecu ss -i xxx.xxx.xxx.xxx:5555
 
 # Take a screenshot and save it and Output logs in verbose
 $ arecu ss -v xxx.xxx.xxx.xxx:5555
