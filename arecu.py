@@ -17,7 +17,7 @@ import configparser
 import modules
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
 
-VERSION = '2.0.0'
+VERSION = '2.2.0'
 
 
 ##### Make Parser #####
@@ -35,7 +35,7 @@ parser.add_argument('--version',
         action = 'version',
         default = False)
 
-parser.set_defaults(func=modules.function.help)
+parser.set_defaults(func=modules.function.print_help)
 
 # Sub-commands parser
 subparsers = parser.add_subparsers(
@@ -44,11 +44,9 @@ subparsers = parser.add_subparsers(
         help = 'For more detailed help add --help')
 
 # "dec" command parser
-parser_dec = subparsers.add_parser('decompile',
-        aliases = ['dec'],
+parser_dec = subparsers.add_parser('dec',
+        aliases = ['decompile'],
         help = 'Decompile & Decode the apk file')
-
-parser_dec.set_defaults(func=modules.decompile.main)
 
 parser_dec.add_argument('apk_file',
         help = 'Target apk file')
@@ -79,7 +77,7 @@ parser_dec.add_argument('-a', '--apktool',
         default = False)
 
 parser_dec.add_argument('-o', '--outdir',
-        help = 'The name of directory that gets written. Default is current directory',
+        help = 'The name of directory that gets written',
         type = str,
         default = '.')
 
@@ -87,6 +85,28 @@ parser_dec.add_argument('-v', '--verbose',
         help = 'Increase verbosity level',
         action = 'store_true',
         default = False)
+
+parser_dec.set_defaults(func=modules.decompile.main)
+
+# "ss" command parser
+parser_ss = subparsers.add_parser('ss',
+        aliases = ['screenshot'],
+        help = 'Take a screenshot of a device')
+
+parser_ss.add_argument('device',
+        help = 'Target device')
+
+parser_ss.add_argument('-o', '--outdir',
+        help = 'The name of directory that gets written',
+        type = str,
+        default = '.')
+
+parser_ss.add_argument('-v', '--verbose',
+        help = 'Increase verbosity level',
+        action = 'store_true',
+        default = False)
+
+parser_ss.set_defaults(func=modules.screenshot.main)
 
 
 ##### Main Process #####
