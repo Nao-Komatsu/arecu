@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
+from logging import getLogger
 
 logger = getLogger('arecu').getChild('function')
 
 
-##### Function Definition #####
+# ----- Function definition -----
 
 # Output help message
 def print_help(args):
     print('usage: arecu {subcommand} [options...] <target>\n')
     print('Show more detailed help:')
     print('\tarecu --help')
+
 
 # Call subprocess
 def call_subprocess(cmd, level):
@@ -30,12 +31,12 @@ def call_subprocess(cmd, level):
 
     if (level == 'INFO'):
         try:
-            subprocess.run(cmd, stdout = subprocess.PIPE, check = True)
+            subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError:
             logger.info('Error: {}'.format(cmd))
 
     else:
         try:
-            subprocess.run(cmd, check = True)
+            subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError:
             logger.info('Error: {}'.format(cmd))
