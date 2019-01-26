@@ -64,10 +64,11 @@ My scripts were tested on Ubuntu16.04.
 ### Installing
 
 ```
-cd ~
-git clone https://github.com/nsecdevs/arecu.git
-cd arecu/
-./install.sh
+$ pip install -r requirements.txt
+$ cd ~
+$ git clone https://github.com/nsecdevs/arecu.git
+$ cd arecu/
+$ ./install.sh
 ```
 
 ## Usage
