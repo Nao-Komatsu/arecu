@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
+from logging import getLogger, StreamHandler, Formatter
 
 logger = getLogger('arecu').getChild('log')
+
 
 def config(level):
 
