@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import configparser
 import modules
 import os
 import shutil
+import yaml
 import zipfile
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
-from pathlib import Path
+from logging import getLogger
 
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
-inifile = '<INIFILE>'
-config = configparser.ConfigParser()
-config.read(inifile, 'UTF-8')
-tmp_dir = config.get('decompile', 'tmp_dir')
-lib_path = config.get('decompile', 'lib_path')
+with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+    config = yaml.load(yml)
+
+tmp_dir = config['decompile']['tmp_dir']
+lib_path = config['decompile']['lib_path']
+
 
 # Decompile & Decode process
 def main(args):
@@ -56,13 +56,14 @@ def main(args):
     if (jdcmd or procyon or unzip):
 
         logger.debug('Create directory \'{}\''.format(tmp_dir))
-        os.makedirs(tmp_dir, exist_ok = True)
+        os.makedirs(tmp_dir, exist_ok=True)
 
         # Unzip
         logger.info('--- Unzip apk file ---')
         logger.debug('Unzip \'{}\' to \'{}\''.format(apk, tmp_dir))
         with zipfile.ZipFile(apk) as existing_zip:
-            dexFiles = [file for file in existing_zip.namelist() if '.dex' in file]
+            dexFiles = [
+                    file for file in existing_zip.namelist() if '.dex' in file]
             jarFiles = [file.replace('dex', 'jar') for file in dexFiles]
             existing_zip.extractall(tmp_dir)
 
@@ -74,22 +75,29 @@ def main(args):
         if (jdcmd or procyon):
             logger.info('--- Convert Dex to Jar ---')
             for i, dex in enumerate(dexFiles):
-                modules.function.call_subprocess([os.path.join(lib_path, 'dex2jar/d2j-dex2jar.sh'),
-                    os.path.join(tmp_dir, dex), '-o', os.path.join(tmp_dir, jarFiles[i])], level)
+                modules.function.call_subprocess(
+                        [os.path.join(lib_path, 'dex2jar/d2j-dex2jar.sh'),
+                            os.path.join(tmp_dir, dex), '-o',
+                            os.path.join(tmp_dir, jarFiles[i])], level)
 
             # JavaDecompiler
             if (jdcmd):
                 logger.info('--- Decompile using JavaDecompiler ---')
                 for jar in jarFiles:
-                    modules.function.call_subprocess([os.path.join(lib_path, 'jd-cmd/jd-cli'),
-                        '-od', outdir + '_jdcmd', os.path.join(tmp_dir, jar)], level)
+                    modules.function.call_subprocess(
+                            [os.path.join(lib_path, 'jd-cmd/jd-cli'),
+                                '-od', outdir + '_jdcmd',
+                                os.path.join(tmp_dir, jar)], level)
 
             # Procyon Decompiler
             if (procyon):
                 logger.info('--- Decompile using Procyon Decompiler ---')
                 for jar in jarFiles:
-                    modules.function.call_subprocess(['java', '-jar', os.path.join(lib_path, 'procyon/procyon.jar'),
-                        '-jar', os.path.join(tmp_dir, jar), '-o', outdir + '_procyon'], level)
+                    modules.function.call_subprocess(
+                            ['java', '-jar',
+                                os.path.join(lib_path, 'procyon/procyon.jar'),
+                                '-jar', os.path.join(tmp_dir, jar),
+                                '-o', outdir + '_procyon'], level)
 
         logger.debug('--- Clean up ---')
         logger.debug('Remove directory \'{}\''.format(tmp_dir))
@@ -98,6 +106,7 @@ def main(args):
     # Decode
     if (apktool):
         logger.info('--- Decode using Apktool ---')
-        modules.function.call_subprocess(['apktool', 'decode', apk, '-o', outdir + '_apktool'], level)
+        modules.function.call_subprocess(
+                ['apktool', 'decode', apk, '-o', outdir + '_apktool'], level)
 
-    logger.info('Done!')
+    logger.info('Successfully')

@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import configparser
 import modules
 import os
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO
+import yaml
+from logging import getLogger
 from pathlib import Path
 
 logger = getLogger('arecu').getChild('screenshot')
 
+
 # Configuration
-inifile = '<INIFILE>'
-config = configparser.ConfigParser()
-config.read(inifile, 'UTF-8')
-name = config.get('screenshot', 'file_name')
-tmp_dir = config.get('screenshot', 'tmp_dir')
+with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+    config = yaml.load(yml)
+
+name = config['screenshot']['file_name']
+tmp_dir = config['screenshot']['tmp_dir']
+
 
 # Output help message
 def main(args):
@@ -37,8 +39,9 @@ def main(args):
         current_num = str(len + 1).zfill(3)
         next_num = str(len + 2).zfill(3)
         current = name + '_' + current_num
-        next = name+ '_' + next_num
-        logger.debug('Length: \'{}\', Current: \'{}\', Next: \'{}\''.format(len, current + '.png', next + '.png'))
+        next = name + '_' + next_num
+        logger.debug('Length: \'{}\', Current: \'{}\', Next: \'{}\''.format(
+            len, current + '.png', next + '.png'))
         name = current
 
     path = os.path.join(tmp_dir, 'tmp.png')
@@ -46,11 +49,14 @@ def main(args):
     image = os.path.join(args.outdir, name + '.png')
 
     logger.debug('Take a screenshot...')
-    modules.function.call_subprocess(['adb', '-s', device, 'shell', 'screencap', '-p', path], level)
+    modules.function.call_subprocess(
+            ['adb', '-s', device, 'shell', 'screencap', '-p', path], level)
 
     logger.debug('Download screenshot...')
-    modules.function.call_subprocess(['adb', '-s', device, 'pull', path, image], level)
+    modules.function.call_subprocess(
+            ['adb', '-s', device, 'pull', path, image], level)
     logger.debug('Saved \'{}\''.format(image))
 
     logger.debug('Delete temporary screenshot in a device...')
-    modules.function.call_subprocess(['adb', '-s', device, 'shell', 'rm', path], level)
+    modules.function.call_subprocess(
+            ['adb', '-s', device, 'shell', 'rm', path], level)
