@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import configparser
 import modules
 import os
 import shutil
+import yaml
 import zipfile
 from logging import getLogger
 
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
-inifile = '<INIFILE>'
-config = configparser.ConfigParser()
-config.read(inifile, 'UTF-8')
-tmp_dir = config.get('decompile', 'tmp_dir')
-lib_path = config.get('decompile', 'lib_path')
+with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+    config = yaml.load(yml)
+
+tmp_dir = config['decompile']['tmp_dir']
+lib_path = config['decompile']['lib_path']
 
 
 # Decompile & Decode process

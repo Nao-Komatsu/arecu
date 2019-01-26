@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import configparser
 import modules
 import os
+import yaml
 from logging import getLogger
 from pathlib import Path
 
@@ -10,11 +10,11 @@ logger = getLogger('arecu').getChild('screenshot')
 
 
 # Configuration
-inifile = '<INIFILE>'
-config = configparser.ConfigParser()
-config.read(inifile, 'UTF-8')
-name = config.get('screenshot', 'file_name')
-tmp_dir = config.get('screenshot', 'tmp_dir')
+with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+    config = yaml.load(yml)
+
+name = config['screenshot']['file_name']
+tmp_dir = config['screenshot']['tmp_dir']
 
 
 # Output help message
