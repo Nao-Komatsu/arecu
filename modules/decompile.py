@@ -10,7 +10,7 @@ from logging import getLogger
 logger = getLogger('arecu').getChild('decompile')
 
 # Configuration
-with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+with open('<YMLFILE>', 'r', encoding='utf-8') as yml:
     config = yaml.load(yml)
 
 tmp_dir = config['decompile']['tmp_dir']

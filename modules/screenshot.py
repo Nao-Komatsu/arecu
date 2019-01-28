@@ -10,7 +10,7 @@ logger = getLogger('arecu').getChild('screenshot')
 
 
 # Configuration
-with open('<INIFILE>', 'r', encoding='utf-8') as yml:
+with open('<YMLFILE>', 'r', encoding='utf-8') as yml:
     config = yaml.load(yml)
 
 name = config['screenshot']['file_name']
