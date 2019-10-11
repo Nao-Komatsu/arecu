@@ -11,7 +11,7 @@ logger = getLogger('arecu').getChild('screenshot')
 
 # Configuration
 with open('<YMLFILE>', 'r', encoding='utf-8') as yml:
-    config = yaml.load(yml)
+    config = yaml.load(yml, Loader=yaml.SafeLoader)
 
 name = config['screenshot']['file_name']
 tmp_dir = config['screenshot']['tmp_dir']
