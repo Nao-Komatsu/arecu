@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 '''Arecu - Android Application Reverse Engineering Commandline Utility
@@ -16,7 +16,7 @@ import argparse
 import modules
 from logging import getLogger
 
-VERSION = '2.5.1'
+VERSION = '2.5.2'
 
 
 # ----- Make parser -----
