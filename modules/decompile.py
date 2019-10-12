@@ -76,7 +76,7 @@ def main(args):
             logger.info('--- Convert Dex to Jar ---')
             for i, dex in enumerate(dexFiles):
                 modules.function.call_subprocess(
-                        [os.path.join(lib_path, 'dex2jar/d2j-dex2jar.sh'),
+                        [os.path.join(lib_path, 'dex-tools/d2j-dex2jar.sh'),
                             os.path.join(tmp_dir, dex), '-o',
                             os.path.join(tmp_dir, jarFiles[i])], level)
 
