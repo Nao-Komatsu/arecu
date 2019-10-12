@@ -16,7 +16,7 @@ import argparse
 import modules
 from logging import getLogger
 
-VERSION = '2.5.2'
+VERSION = '2.5.3'
 
 
 # ----- Make parser -----
